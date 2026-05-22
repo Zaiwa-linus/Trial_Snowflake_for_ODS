@@ -1,0 +1,16 @@
+# ダウンロードデータ（Snowflakeに登録、GitHubには登録しない）
+data/
+
+# 認証情報
+.env
+profiles.yml
+*.pem
+*.p8
+
+# Python 仮想環境
+.venv/
+
+# dbt 生成物
+target/
+dbt_packages/
+logs/
