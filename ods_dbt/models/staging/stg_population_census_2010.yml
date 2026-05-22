@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: stg_population_census_2010
+    description: |
+      国勢調査（2010年）のステージングモデル。15歳以上就業者数を産業×従業上の地位×男女×地域で集計。
+      RAW の日本語カラム名を英語スネークケースに変換し、定数列（表章項目・時間軸・unit）を除去、value を数値型に変換する。
+      コード列はゼロパディングされた識別子のため varchar を維持する。
+    columns:
+      - name: industry_code
+        description: 産業分類2010コード（varchar・3桁）。000=総数 / 大分類(A-T) / 中分類(3桁数値)。103種類
+        data_type: varchar
+
+      - name: industry_name
+        description: 産業分類2010名称
+        data_type: varchar
+
+      - name: employment_status_code
+        description: 従業上の地位2010コード（varchar・3桁）。000=総数 / 002=家族従業者 / 012=自営業主（家庭内職者を含む） / 013=雇用者（役員を含む）
+        data_type: varchar
+
+      - name: employment_status_name
+        description: 従業上の地位2010名称
+        data_type: varchar
+
+      - name: sex_code
+        description: 男女別2010コード（varchar・3桁）。000=総数 / 001=男 / 002=女
+        data_type: varchar
+
+      - name: sex_name
+        description: 男女別2010名称
+        data_type: varchar
+
+      - name: region_code
+        description: 地域（2010）コード（varchar・5桁）。00000=全国 / 00001=全国市部 / 00002=全国郡部 / XX000=都道府県 / XX001=都道府県市部 / XXXXX=政令市・特別区・50万人以上の市区。133種類
+        data_type: varchar
+
+      - name: region_name
+        description: 地域（2010）名称
+        data_type: varchar
+
+      - name: survey_year
+        description: 調査年（integer）。RAW の時間軸（年次）_code（'2010000000'）から先頭4桁を抽出。本テーブルは 2010 のみ
+        data_type: integer
+
+      - name: value
+        description: 15歳以上就業者数（人）。RAW では varchar。'-' は秘匿・集計不能を示し null に変換。整数
+        data_type: number

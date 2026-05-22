@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: stg_wage_starting_salary_2009
+    description: |
+      賃金構造基本統計調査（2009年）のステージングモデル。新規学卒者初任給額（千円）を産業×都道府県×企業規模×性別×学歴別に集計。
+      RAW の日本語カラム名を英語スネークケースに変換し、定数列（初任給額の区分・地域・時間軸・unit）を除去、value を数値型に変換する。
+      地域_code / 地域 は全行 00000/'全国' の定数のため除去。都道府県軸は prefecture_code を使用。
+    columns:
+      - name: industry_code
+        description: 産業分類コード（varchar・2〜3桁）。01=産業計 / 02=C鉱業 / 03=D建設業 / 07=E製造業 / 32=F電気ガス / 37=G情報通信 / 43=H運輸 / 52=I卸小売 / 67=J金融保険 / 74=K不動産 / 78=L学術 / 83=M宿泊飲食 / 87=N生活関連 / 91=O教育 / 94=P医療福祉 / 98=Q複合 / 101=Rサービス。17種類
+        data_type: varchar
+
+      - name: industry_name
+        description: 産業分類名称
+        data_type: varchar
+
+      - name: prefecture_code
+        description: 都道府県コード（varchar・2桁）。48=全国 / 01〜47=各都道府県
+        data_type: varchar
+
+      - name: prefecture_name
+        description: 都道府県名称（'全国'・'０１ 北海道'形式の全角数字+都道府県名）
+        data_type: varchar
+
+      - name: company_size_code
+        description: 企業規模4区分コード（varchar・2桁）。01=企業規模計（10人以上） / 02=10〜99人 / 03=100〜999人 / 04=1,000人以上
+        data_type: varchar
+
+      - name: company_size_name
+        description: 企業規模4区分名称
+        data_type: varchar
+
+      - name: sex_code
+        description: 性別コード（varchar・2桁）。01=男女計 / 02=男 / 03=女
+        data_type: varchar
+
+      - name: sex_name
+        description: 性別名称
+        data_type: varchar
+
+      - name: education_code
+        description: 学歴5区分コード（varchar・2桁）。01=学歴計 / 02=高校卒 / 03=高専・短大卒 / 04=大学卒 / 05=大学院修士課程修了
+        data_type: varchar
+
+      - name: education_name
+        description: 学歴5区分名称
+        data_type: varchar
+
+      - name: survey_year
+        description: 調査年（integer）。RAW の時間軸（年）_code（'2009000000'）から先頭4桁を抽出。本テーブルは 2009 のみ
+        data_type: integer
+
+      - name: value
+        description: 初任給額（千円）。RAW では varchar。'-' は秘匿・集計不能を示し null に変換。小数値あり
+        data_type: number

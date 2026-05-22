@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_population_estimate
+    description: |
+      人口推計（年次）のステージングモデル。都道府県×年齢5歳階級×男女別の総人口（千人）。
+      RAW の日本語カラム名を英語スネークケースに変換し、定数列（表章項目・unit）を除去、value を数値型に変換する。
+      時間軸（年月日現在）_code は '2005'〜'2009' の4桁文字列なので直接 integer にキャスト。
+    columns:
+      - name: region_code
+        description: 全国・都道府県コード（varchar・5桁ゼロパディング）。00000=全国 / XX000=都道府県(47)。48種類
+        data_type: varchar
+
+      - name: region_name
+        description: 全国・都道府県名称
+        data_type: varchar
+
+      - name: age_group_code
+        description: 年齢5歳階級コード（varchar・5桁）。01000=総数 / 01001〜01017=0〜4歳〜80歳以上 / 04017=80〜84歳 / 04018=85歳以上。20種類
+        data_type: varchar
+
+      - name: age_group_name
+        description: 年齢5歳階級名称
+        data_type: varchar
+
+      - name: sex_code
+        description: 男女別コード（varchar・3桁）。000=男女計 / 001=男 / 002=女
+        data_type: varchar
+
+      - name: sex_name
+        description: 男女別名称
+        data_type: varchar
+
+      - name: survey_year
+        description: 調査年（integer）。RAW の時間軸（年月日現在）_code（'2005'〜'2009' の4桁）を integer にキャスト。2005〜2009の5年分を含む
+        data_type: integer
+
+      - name: value
+        description: 総人口（千人）。RAW では varchar。全行数値変換可能。整数
+        data_type: number

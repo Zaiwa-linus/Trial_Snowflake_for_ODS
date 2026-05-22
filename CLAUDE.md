@@ -1,5 +1,9 @@
 # プロジェクトルール
 
+## 目的
+
+snowflake_dbt_data_product_action_note.md
+
 ## ドキュメント
 
 - 必要な環境変数の一覧は `docs/env_vars.md` に定義されている
