@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(uv run * .claude/*)"
+      "Bash(uv run * .claude/*)",
+      "Bash(uv run dbt show --select *)"
     ]
   }
 }

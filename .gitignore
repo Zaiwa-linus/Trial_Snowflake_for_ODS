@@ -14,3 +14,9 @@ profiles.yml
 target/
 dbt_packages/
 logs/
+
+# 外部スキル（dbt-labs/dbt-agent-skills）
+.claude/skills/using-dbt-for-analytics-engineering/
+.claude/skills/running-dbt-commands/
+.claude/skills/adding-dbt-unit-test/
+.claude/skills/troubleshooting-dbt-job-errors/
