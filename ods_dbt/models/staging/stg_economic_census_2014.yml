@@ -11,47 +11,80 @@ models:
       - name: measure_code
         description: 表章項目コード（varchar・3桁）。150=事業所数 / 153=従業者数男 / 154=従業者数女 / 155=従業者数総数 / 156=常用雇用者女 / 157=常用雇用者男 / 158=常用雇用者総数 / 222=1事業所当たり従業者数
         data_type: varchar
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['150', '153', '154', '155', '156', '157', '158', '222']
 
       - name: measure_name
         description: 表章項目名称
         data_type: varchar
+        tests:
+          - not_null
 
       - name: industry_code
         description: H26産業分類コード（varchar）。大分類(A-S)と中分類(4桁数値)が混在。000=全産業（集計行）
         data_type: varchar
+        tests:
+          - not_null
 
       - name: industry_name
         description: H26産業分類名称。121種類
         data_type: varchar
+        tests:
+          - not_null
 
       - name: employee_size_code
         description: H26従業者規模コード（varchar・3桁）。000=総数 / 001=1人 / 002=2人 / 003=3人 / 004=4人 / 005=1〜4人 / 006=5〜9人 / 007=10〜19人 / 009=20〜29人 / 011=30〜49人 / 013=50〜99人 / 015=100〜199人 / 016=200〜299人 / 018=300人以上 / 022=出向・派遣従業者のみ
         data_type: varchar
+        tests:
+          - not_null
 
       - name: employee_size_name
         description: H26従業者規模名称
         data_type: varchar
+        tests:
+          - not_null
 
       - name: org_type_code
         description: H26経営組織5区分コード（varchar・3桁）。000=総数 / 007=うち民営 / 008=個人 / 009=法人 / 010=会社 / 011=会社以外の法人 / 016=法人でない団体
         data_type: varchar
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['000', '007', '008', '009', '010', '011', '016']
 
       - name: org_type_name
         description: H26経営組織5区分名称
         data_type: varchar
+        tests:
+          - not_null
 
       - name: region_code
         description: H26地域コード（varchar・5桁ゼロパディング）。00000=全国 / XX000=都道府県(47) / XXNNN=政令市・特別区(21大都市)
         data_type: varchar
+        tests:
+          - not_null
 
       - name: region_name
         description: H26地域名称。69種類（全国・47都道府県・21大都市）
         data_type: varchar
+        tests:
+          - not_null
 
       - name: survey_year
         description: 調査年（integer）。RAW の時間軸_code（'2014000000'）から先頭4桁を抽出。本テーブルは 2014 のみ
         data_type: integer
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [2014]
 
       - name: value
-        description: 指標値（number）。RAW では varchar。事業所数・従業者数系は整数、1事業所当たり従業者数(222)は小数あり。欠損・非数値は null
+        description: 指標値（number）。RAW では varchar。事業所数・従業者数系は整数、1事業所当たり従業者数(222)は小数あり。欠損・非数値は null（本テーブルは全行数値変換可能）
         data_type: number
+        tests:
+          - not_null
