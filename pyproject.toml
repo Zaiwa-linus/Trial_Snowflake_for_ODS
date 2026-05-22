@@ -3,5 +3,7 @@ name = "trial-snowflake-for-ods"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
+    "dbt-core>=1.11.11",
+    "dbt-snowflake>=1.10.5",
     "snowflake-connector-python>=3.0,<4",
 ]

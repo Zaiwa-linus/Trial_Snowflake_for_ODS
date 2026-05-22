@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw
+    database: "{{ env_var('SNOWFLAKE_DATABASE', 'ODS_TRIAL') }}"
+    schema: RAW
+    tables:
+      - name: ECONOMIC_CENSUS_2009
+        description: |
+          e-Stat 経済センサス‐基礎調査（2009年）。
+          産業分類×従業者規模×経営組織×地域の組み合わせに対する事業所数・従業者数。
+          統計表ID: 0003032544

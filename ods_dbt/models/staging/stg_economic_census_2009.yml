@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: stg_economic_census_2009
+    description: |
+      経済センサス‐基礎調査（2009年）のステージングモデル。
+      RAW の英語カラム名をスネークケースに統一し、定数列を除去、value を数値型に変換する。
+      time_code / time_label / unit（全行定数・空文字）は survey_year integer に集約して削除。
+      コード列は全てゼロパディングされた識別子のため varchar を維持する。
+    columns:
+      - name: measure_code
+        description: 表章項目コード（varchar・ゼロパディング3桁）。003=事業所数 / 004-006=従業者数(総/男/女) / 007-009=常用雇用者(総/男/女) / 019=1事業所当たり従業者数
+        data_type: varchar
+
+      - name: measure_name
+        description: 表章項目名称
+        data_type: varchar
+
+      - name: industry_code
+        description: 産業分類コード（varchar・ゼロパディング3桁）。大分類(A-S)と中分類(数値始まり)が混在。000=A〜S全産業（集計行）
+        data_type: varchar
+
+      - name: industry_name
+        description: 産業分類名称。121種類・大分類はアルファベット1文字始まり、中分類は数値始まり
+        data_type: varchar
+
+      - name: org_type_code
+        description: 経営組織5区分コード（varchar・ゼロパディング3桁）。000=総数 / 001=うち民営 / 002=うち個人 / 003=うち法人 / 004=会社 / 005=会社以外の法人。包含関係あり（000>001>002/003>004/005）
+        data_type: varchar
+
+      - name: org_type_name
+        description: 経営組織5区分名称
+        data_type: varchar
+
+      - name: employee_size_code
+        description: 従業者規模13区分コード（varchar・ゼロパディング3桁）。000=総数 / 001-004=個人単位(1/2/3/4人) / 005=1〜4人 / 006-013=規模帯 / 014=派遣従業者のみ。001-004 と 005 は重複集計に注意
+        data_type: varchar
+
+      - name: employee_size_name
+        description: 従業者規模13区分名称
+        data_type: varchar
+
+      - name: region_code
+        description: 地域コード（varchar・5桁ゼロパディング）。00000=全国 / 002XX=大都市圏(14圏) / XX000=都道府県(47) / XXNNN=政令市・特別区(19大都市)
+        data_type: varchar
+
+      - name: region_name
+        description: 地域名称。81種類
+        data_type: varchar
+
+      - name: survey_year
+        description: 調査年（integer）。RAW の time_code（'2009000000'）から先頭4桁を抽出。本テーブルは 2009 のみ
+        data_type: integer
+
+      - name: value
+        description: 指標値（number）。RAW では varchar だが全行数値変換可能（欠損・非数値ゼロ件確認済み）。事業所数・従業者数系は整数、1事業所当たり従業者数(019)は小数あり。最大値 62,860,514
+        data_type: number

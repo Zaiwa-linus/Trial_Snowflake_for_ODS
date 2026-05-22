@@ -28,5 +28,5 @@ SNOWFLAKE_SCHEMA=RAW
 ## 注意事項
 
 - `.env` は `.gitignore` に含めること（認証情報のため）
-- 認証方式は `externalbrowser`（SSO）固定。パスワードは不要
+- 認証方式はパスワード認証。`SNOWFLAKE_PASSWORD` に設定したパスワードを使用する
 - GitHub Actions では Repository Secrets / Environment Variables として登録する
