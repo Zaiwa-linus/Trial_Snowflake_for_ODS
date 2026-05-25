@@ -7,247 +7,618 @@ models:
       経済センサス2009の産業分類マスタ。2014とはコード体系が異なる（同一コードが別産業）。
       int_fct_economic_census の source_survey='2009' の行にJOINして使用。
       industry_level='中分類' のみがファクトテーブルに存在する。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: industry_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:IndustryCode
+          business_name: 産業分類コード（経済センサス2009）
+          privacy_category: non_pii
       - name: industry_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:IndustryName
+          business_name: 産業分類名称（経済センサス2009）
+          privacy_category: non_pii
       - name: industry_level
+        data_type: varchar
         description: "'集計行' | '大分類' | '中分類'"
         tests:
           - not_null
           - accepted_values:
               arguments:
                 values: ['集計行', '大分類', '中分類']
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:IndustryLevel
+          business_name: 産業分類粒度（経済センサス2009）
+          privacy_category: non_pii
 
   - name: int_mst_ec14_industry
     description: |
       経済センサス2014の産業分類マスタ（H26基準）。2009とはコード体系が異なる。
       int_fct_economic_census の source_survey='2014' の行にJOINして使用。
       industry_level='中分類' のみがファクトテーブルに存在する。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: industry_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:IndustryCode
+          business_name: 産業分類コード（経済センサス2014）
+          privacy_category: non_pii
       - name: industry_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:IndustryName
+          business_name: 産業分類名称（経済センサス2014）
+          privacy_category: non_pii
       - name: industry_level
+        data_type: varchar
         description: "'集計行' | '大分類' | '中分類'"
         tests:
           - not_null
           - accepted_values:
               arguments:
                 values: ['集計行', '大分類', '中分類']
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:IndustryLevel
+          business_name: 産業分類粒度（経済センサス2014）
+          privacy_category: non_pii
 
   - name: int_mst_ec09_employee_size
     description: |
       経済センサス2009の従業者規模マスタ。2014とはコード体系が異なる。
       2009: 001=1〜4人合計(集計) / 002=1人 / 003=2人 / 004=3人 / 005=4人 / ...
       is_aggregate=true の 000(総数)・001(1-4人合計) はファクトテーブルに存在しない。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: employee_size_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:EmployeeSizeCode
+          business_name: 従業者規模コード（経済センサス2009）
+          privacy_category: non_pii
       - name: employee_size_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:EmployeeSizeName
+          business_name: 従業者規模名称（経済センサス2009）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=集計行（ファクトテーブルには含まれない）"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:EmployeeSizeIsAggregate
+          business_name: 集計行フラグ（従業者規模2009）
+          privacy_category: non_pii
 
   - name: int_mst_ec14_employee_size
     description: |
       経済センサス2014の従業者規模マスタ。2009とはコード体系が異なる。
       2014: 001=1人 / 002=2人 / 003=3人 / 004=4人 / 005=1〜4人合計(集計) / 006=5〜9人 / ...
       is_aggregate=true の 000(総数)・005(1-4人合計) はファクトテーブルに存在しない。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: employee_size_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:EmployeeSizeCode
+          business_name: 従業者規模コード（経済センサス2014）
+          privacy_category: non_pii
       - name: employee_size_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:EmployeeSizeName
+          business_name: 従業者規模名称（経済センサス2014）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=集計行（ファクトテーブルには含まれない）"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:EmployeeSizeIsAggregate
+          business_name: 集計行フラグ（従業者規模2014）
+          privacy_category: non_pii
 
   - name: int_mst_ec09_org_type
     description: |
       経済センサス2009の経営組織マスタ。
       int_fct_economic_census で source_survey='2009' の行にJOINして使用。
       org_type_level='最細粒度' のみがファクトテーブルに存在する。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: org_type_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:OrgTypeCode
+          business_name: 経営組織コード（経済センサス2009）
+          privacy_category: non_pii
       - name: org_type_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:OrgTypeName
+          business_name: 経営組織名称（経済センサス2009）
+          privacy_category: non_pii
       - name: org_type_level
+        data_type: varchar
         description: "'総数' | '中間集計' | '最細粒度'"
+        meta:
+          concept_uri: urn:opendata:estat:ec2009:OrgTypeLevel
+          business_name: 経営組織粒度（経済センサス2009）
+          privacy_category: non_pii
 
   - name: int_mst_ec14_org_type
     description: |
       経済センサス2014の経営組織マスタ（H26基準）。
       int_fct_economic_census で source_survey='2014' の行にJOINして使用。
       org_type_level='最細粒度' のみがファクトテーブルに存在する。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: org_type_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:OrgTypeCode
+          business_name: 経営組織コード（経済センサス2014）
+          privacy_category: non_pii
       - name: org_type_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:OrgTypeName
+          business_name: 経営組織名称（経済センサス2014）
+          privacy_category: non_pii
       - name: org_type_level
+        data_type: varchar
         description: "'総数' | '中間集計' | '最細粒度'"
+        meta:
+          concept_uri: urn:opendata:estat:ec2014:OrgTypeLevel
+          business_name: 経営組織粒度（経済センサス2014）
+          privacy_category: non_pii
 
   - name: int_mst_ec_region
     description: |
       経済センサス（2009・2014）地域マスタ。両年のコードをUNIONして重複排除。
       region_type で地域粒度を識別できる。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: region_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ec:RegionCode
+          business_name: 地域コード（経済センサス）
+          privacy_category: non_pii
       - name: region_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec:RegionName
+          business_name: 地域名称（経済センサス）
+          privacy_category: non_pii
       - name: region_type
+        data_type: varchar
         description: "'全国' | '大都市圏' | '都道府県' | '政令市等'"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec:RegionType
+          business_name: 地域区分（経済センサス）
+          privacy_category: non_pii
       - name: pref_code
+        data_type: varchar
         description: 都道府県コード2桁（region_codeの先頭2桁）
+        meta:
+          concept_uri: urn:opendata:estat:ec:PrefectureCode
+          business_name: 都道府県コード（経済センサス）
+          privacy_category: non_pii
 
   - name: int_mst_ec_measure
     description: |
       経済センサス（2009・2014）表章項目マスタ。
       2009と2014でコード体系が異なるため survey_year で区別。
       ファクトテーブルとのJOINは measure_code AND survey_year の両方で行うこと。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: measure_code
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec:MeasureCode
+          business_name: 表章項目コード（経済センサス）
+          privacy_category: non_pii
       - name: measure_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec:MeasureName
+          business_name: 表章項目名称（経済センサス）
+          privacy_category: non_pii
       - name: survey_year
+        data_type: integer
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ec:SurveyYear
+          business_name: 調査年（経済センサス）
+          privacy_category: non_pii
 
   # ── 国勢調査2010 ──────────────────────────────────────────────────────────
   - name: int_mst_pc_industry
     description: 国勢調査2010の産業分類マスタ。経済センサスとは別の産業分類体系。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: industry_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:IndustryCode
+          business_name: 産業分類コード（国勢調査2010）
+          privacy_category: non_pii
       - name: industry_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:IndustryName
+          business_name: 産業分類名称（国勢調査2010）
+          privacy_category: non_pii
       - name: industry_level
+        data_type: varchar
         description: "'集計行' | '大分類' | '中分類'"
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:IndustryLevel
+          business_name: 産業分類粒度（国勢調査2010）
+          privacy_category: non_pii
 
   - name: int_mst_pc_employment_status
     description: 国勢調査2010の従業上の地位マスタ。000=総数 / 002=家族従業者 / 012=自営業主 / 013=雇用者
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: employment_status_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:EmploymentStatusCode
+          business_name: 従業上の地位コード（国勢調査2010）
+          privacy_category: non_pii
       - name: employment_status_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:EmploymentStatusName
+          business_name: 従業上の地位名称（国勢調査2010）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:EmploymentStatusIsAggregate
+          business_name: 集計行フラグ（従業上の地位）
+          privacy_category: non_pii
 
   - name: int_mst_pc_region
     description: |
       国勢調査2010の地域マスタ。全国・都道府県・市部郡部・政令市等の133種類。
       都道府県(XX000)と都道府県市部(XX001)+郡部は包含関係にあるため、
       マートで集計する際は region_type でフィルタして重複を避けること。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: region_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:RegionCode
+          business_name: 地域コード（国勢調査2010）
+          privacy_category: non_pii
       - name: region_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:RegionName
+          business_name: 地域名称（国勢調査2010）
+          privacy_category: non_pii
       - name: region_type
+        data_type: varchar
         description: "'全国' | '全国市郡部' | '都道府県' | '都道府県市部' | '政令市等'"
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:RegionType
+          business_name: 地域区分（国勢調査2010）
+          privacy_category: non_pii
       - name: pref_code
+        data_type: varchar
         description: 都道府県コード2桁（全国系コードはnull）
+        meta:
+          concept_uri: urn:opendata:estat:pc2010:PrefectureCode
+          business_name: 都道府県コード（国勢調査2010）
+          privacy_category: non_pii
 
   # ── 人口推計 ──────────────────────────────────────────────────────────────
   - name: int_mst_sex_census
     description: |
       国勢調査・人口推計共通の性別マスタ（000/001/002体系）。
       賃金調査の int_mst_ws_sex（01/02/03体系）とは別体系。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: sex_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:census:SexCode
+          business_name: 性別コード（国勢調査・人口推計系）
+          privacy_category: non_pii
       - name: sex_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:census:SexName
+          business_name: 性別名称（国勢調査・人口推計系）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=000(男女計/総数)"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:census:SexIsAggregate
+          business_name: 集計行フラグ（性別）
+          privacy_category: non_pii
 
   - name: int_mst_pe_age_group
     description: 人口推計の年齢5歳階級マスタ。01000=総数、01001〜=各階級。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: age_group_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:pe:AgeGroupCode
+          business_name: 年齢5歳階級コード（人口推計）
+          privacy_category: non_pii
       - name: age_group_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:pe:AgeGroupName
+          business_name: 年齢5歳階級名称（人口推計）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=01000(総数)"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:pe:AgeGroupIsAggregate
+          business_name: 集計行フラグ（年齢階級）
+          privacy_category: non_pii
 
   - name: int_mst_pe_region
     description: 人口推計の地域マスタ。00000=全国 と 47都道府県の48種類。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: region_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:pe:RegionCode
+          business_name: 地域コード（人口推計）
+          privacy_category: non_pii
       - name: region_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:pe:RegionName
+          business_name: 地域名称（人口推計）
+          privacy_category: non_pii
       - name: region_type
+        data_type: varchar
         description: "'全国' | '都道府県'"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:pe:RegionType
+          business_name: 地域区分（人口推計）
+          privacy_category: non_pii
 
   # ── 賃金構造基本統計調査2009 ─────────────────────────────────────────────
   - name: int_mst_ws_industry
     description: 賃金調査2009の産業分類マスタ（大分類17種類）。経済センサス系とは別の産業コード体系。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: industry_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:IndustryCode
+          business_name: 産業分類コード（賃金調査2009）
+          privacy_category: non_pii
       - name: industry_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:IndustryName
+          business_name: 産業分類名称（賃金調査2009）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=01(産業計)"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:IndustryIsAggregate
+          business_name: 集計行フラグ（産業）
+          privacy_category: non_pii
 
   - name: int_mst_ws_sex
     description: |
       賃金調査2009の性別マスタ（01/02/03体系）。
       国勢調査系の int_mst_sex_census（000/001/002体系）とは別体系。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: sex_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:SexCode
+          business_name: 性別コード（賃金調査2009）
+          privacy_category: non_pii
       - name: sex_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:SexName
+          business_name: 性別名称（賃金調査2009）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=01(男女計)"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:SexIsAggregate
+          business_name: 集計行フラグ（性別）
+          privacy_category: non_pii
 
   - name: int_mst_ws_company_size
     description: 賃金調査2009の企業規模マスタ。01=規模計 / 02-04=各規模。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: company_size_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:CompanySizeCode
+          business_name: 企業規模コード（賃金調査2009）
+          privacy_category: non_pii
       - name: company_size_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:CompanySizeName
+          business_name: 企業規模名称（賃金調査2009）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=01(企業規模計)"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:CompanySizeIsAggregate
+          business_name: 集計行フラグ（企業規模）
+          privacy_category: non_pii
 
   - name: int_mst_ws_education
     description: 賃金調査2009の学歴マスタ。01=学歴計 / 02-05=各学歴。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: education_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:EducationCode
+          business_name: 学歴コード（賃金調査2009）
+          privacy_category: non_pii
       - name: education_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:EducationName
+          business_name: 学歴名称（賃金調査2009）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=01(学歴計)"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:EducationIsAggregate
+          business_name: 集計行フラグ（学歴）
+          privacy_category: non_pii
 
   - name: int_mst_ws_prefecture
     description: |
       賃金調査2009の都道府県マスタ（2桁コード体系）。
       経済センサス系の5桁コード(XX000)とは別体系。48=全国 / 01-47=各都道府県。
+    meta:
+      domain: labor_market
+      owner_team: data-platform
+      lifecycle_status: active
     columns:
       - name: prefecture_code
+        data_type: varchar
         tests: [not_null, unique]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:PrefectureCode
+          business_name: 都道府県コード（賃金調査2009）
+          privacy_category: non_pii
       - name: prefecture_name
+        data_type: varchar
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:PrefectureName
+          business_name: 都道府県名称（賃金調査2009）
+          privacy_category: non_pii
       - name: is_aggregate
+        data_type: boolean
         description: "true=48(全国)"
         tests: [not_null]
+        meta:
+          concept_uri: urn:opendata:estat:ws2009:PrefectureIsAggregate
+          business_name: 集計行フラグ（都道府県）
+          privacy_category: non_pii
