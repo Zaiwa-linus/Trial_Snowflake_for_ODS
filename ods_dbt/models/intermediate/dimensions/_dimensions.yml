@@ -1,0 +1,253 @@
+version: 2
+
+models:
+  # ── 経済センサス共通 ──────────────────────────────────────────────────────
+  - name: int_mst_ec09_industry
+    description: |
+      経済センサス2009の産業分類マスタ。2014とはコード体系が異なる（同一コードが別産業）。
+      int_fct_economic_census の source_survey='2009' の行にJOINして使用。
+      industry_level='中分類' のみがファクトテーブルに存在する。
+    columns:
+      - name: industry_code
+        tests: [not_null, unique]
+      - name: industry_name
+        tests: [not_null]
+      - name: industry_level
+        description: "'集計行' | '大分類' | '中分類'"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['集計行', '大分類', '中分類']
+
+  - name: int_mst_ec14_industry
+    description: |
+      経済センサス2014の産業分類マスタ（H26基準）。2009とはコード体系が異なる。
+      int_fct_economic_census の source_survey='2014' の行にJOINして使用。
+      industry_level='中分類' のみがファクトテーブルに存在する。
+    columns:
+      - name: industry_code
+        tests: [not_null, unique]
+      - name: industry_name
+        tests: [not_null]
+      - name: industry_level
+        description: "'集計行' | '大分類' | '中分類'"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['集計行', '大分類', '中分類']
+
+  - name: int_mst_ec09_employee_size
+    description: |
+      経済センサス2009の従業者規模マスタ。2014とはコード体系が異なる。
+      2009: 001=1〜4人合計(集計) / 002=1人 / 003=2人 / 004=3人 / 005=4人 / ...
+      is_aggregate=true の 000(総数)・001(1-4人合計) はファクトテーブルに存在しない。
+    columns:
+      - name: employee_size_code
+        tests: [not_null, unique]
+      - name: employee_size_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=集計行（ファクトテーブルには含まれない）"
+        tests: [not_null]
+
+  - name: int_mst_ec14_employee_size
+    description: |
+      経済センサス2014の従業者規模マスタ。2009とはコード体系が異なる。
+      2014: 001=1人 / 002=2人 / 003=3人 / 004=4人 / 005=1〜4人合計(集計) / 006=5〜9人 / ...
+      is_aggregate=true の 000(総数)・005(1-4人合計) はファクトテーブルに存在しない。
+    columns:
+      - name: employee_size_code
+        tests: [not_null, unique]
+      - name: employee_size_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=集計行（ファクトテーブルには含まれない）"
+        tests: [not_null]
+
+  - name: int_mst_ec09_org_type
+    description: |
+      経済センサス2009の経営組織マスタ。
+      int_fct_economic_census で source_survey='2009' の行にJOINして使用。
+      org_type_level='最細粒度' のみがファクトテーブルに存在する。
+    columns:
+      - name: org_type_code
+        tests: [not_null, unique]
+      - name: org_type_name
+        tests: [not_null]
+      - name: org_type_level
+        description: "'総数' | '中間集計' | '最細粒度'"
+
+  - name: int_mst_ec14_org_type
+    description: |
+      経済センサス2014の経営組織マスタ（H26基準）。
+      int_fct_economic_census で source_survey='2014' の行にJOINして使用。
+      org_type_level='最細粒度' のみがファクトテーブルに存在する。
+    columns:
+      - name: org_type_code
+        tests: [not_null, unique]
+      - name: org_type_name
+        tests: [not_null]
+      - name: org_type_level
+        description: "'総数' | '中間集計' | '最細粒度'"
+
+  - name: int_mst_ec_region
+    description: |
+      経済センサス（2009・2014）地域マスタ。両年のコードをUNIONして重複排除。
+      region_type で地域粒度を識別できる。
+    columns:
+      - name: region_code
+        tests: [not_null, unique]
+      - name: region_name
+        tests: [not_null]
+      - name: region_type
+        description: "'全国' | '大都市圏' | '都道府県' | '政令市等'"
+        tests: [not_null]
+      - name: pref_code
+        description: 都道府県コード2桁（region_codeの先頭2桁）
+
+  - name: int_mst_ec_measure
+    description: |
+      経済センサス（2009・2014）表章項目マスタ。
+      2009と2014でコード体系が異なるため survey_year で区別。
+      ファクトテーブルとのJOINは measure_code AND survey_year の両方で行うこと。
+    columns:
+      - name: measure_code
+        tests: [not_null]
+      - name: measure_name
+        tests: [not_null]
+      - name: survey_year
+        tests: [not_null]
+
+  # ── 国勢調査2010 ──────────────────────────────────────────────────────────
+  - name: int_mst_pc_industry
+    description: 国勢調査2010の産業分類マスタ。経済センサスとは別の産業分類体系。
+    columns:
+      - name: industry_code
+        tests: [not_null, unique]
+      - name: industry_name
+        tests: [not_null]
+      - name: industry_level
+        description: "'集計行' | '大分類' | '中分類'"
+
+  - name: int_mst_pc_employment_status
+    description: 国勢調査2010の従業上の地位マスタ。000=総数 / 002=家族従業者 / 012=自営業主 / 013=雇用者
+    columns:
+      - name: employment_status_code
+        tests: [not_null, unique]
+      - name: employment_status_name
+        tests: [not_null]
+      - name: is_aggregate
+        tests: [not_null]
+
+  - name: int_mst_pc_region
+    description: |
+      国勢調査2010の地域マスタ。全国・都道府県・市部郡部・政令市等の133種類。
+      都道府県(XX000)と都道府県市部(XX001)+郡部は包含関係にあるため、
+      マートで集計する際は region_type でフィルタして重複を避けること。
+    columns:
+      - name: region_code
+        tests: [not_null, unique]
+      - name: region_name
+        tests: [not_null]
+      - name: region_type
+        description: "'全国' | '全国市郡部' | '都道府県' | '都道府県市部' | '政令市等'"
+      - name: pref_code
+        description: 都道府県コード2桁（全国系コードはnull）
+
+  # ── 人口推計 ──────────────────────────────────────────────────────────────
+  - name: int_mst_sex_census
+    description: |
+      国勢調査・人口推計共通の性別マスタ（000/001/002体系）。
+      賃金調査の int_mst_ws_sex（01/02/03体系）とは別体系。
+    columns:
+      - name: sex_code
+        tests: [not_null, unique]
+      - name: sex_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=000(男女計/総数)"
+        tests: [not_null]
+
+  - name: int_mst_pe_age_group
+    description: 人口推計の年齢5歳階級マスタ。01000=総数、01001〜=各階級。
+    columns:
+      - name: age_group_code
+        tests: [not_null, unique]
+      - name: age_group_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=01000(総数)"
+        tests: [not_null]
+
+  - name: int_mst_pe_region
+    description: 人口推計の地域マスタ。00000=全国 と 47都道府県の48種類。
+    columns:
+      - name: region_code
+        tests: [not_null, unique]
+      - name: region_name
+        tests: [not_null]
+      - name: region_type
+        description: "'全国' | '都道府県'"
+        tests: [not_null]
+
+  # ── 賃金構造基本統計調査2009 ─────────────────────────────────────────────
+  - name: int_mst_ws_industry
+    description: 賃金調査2009の産業分類マスタ（大分類17種類）。経済センサス系とは別の産業コード体系。
+    columns:
+      - name: industry_code
+        tests: [not_null, unique]
+      - name: industry_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=01(産業計)"
+        tests: [not_null]
+
+  - name: int_mst_ws_sex
+    description: |
+      賃金調査2009の性別マスタ（01/02/03体系）。
+      国勢調査系の int_mst_sex_census（000/001/002体系）とは別体系。
+    columns:
+      - name: sex_code
+        tests: [not_null, unique]
+      - name: sex_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=01(男女計)"
+        tests: [not_null]
+
+  - name: int_mst_ws_company_size
+    description: 賃金調査2009の企業規模マスタ。01=規模計 / 02-04=各規模。
+    columns:
+      - name: company_size_code
+        tests: [not_null, unique]
+      - name: company_size_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=01(企業規模計)"
+        tests: [not_null]
+
+  - name: int_mst_ws_education
+    description: 賃金調査2009の学歴マスタ。01=学歴計 / 02-05=各学歴。
+    columns:
+      - name: education_code
+        tests: [not_null, unique]
+      - name: education_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=01(学歴計)"
+        tests: [not_null]
+
+  - name: int_mst_ws_prefecture
+    description: |
+      賃金調査2009の都道府県マスタ（2桁コード体系）。
+      経済センサス系の5桁コード(XX000)とは別体系。48=全国 / 01-47=各都道府県。
+    columns:
+      - name: prefecture_code
+        tests: [not_null, unique]
+      - name: prefecture_name
+        tests: [not_null]
+      - name: is_aggregate
+        description: "true=48(全国)"
+        tests: [not_null]

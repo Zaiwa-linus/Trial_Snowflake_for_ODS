@@ -1,0 +1,163 @@
+version: 2
+
+models:
+  - name: int_fct_economic_census
+    description: |
+      経済センサス基礎調査（2009年・2014年）のファクトテーブル。
+      stg_economic_census_2009 と stg_economic_census_2014 を縦積みして統合。
+      MECE観点で集計行・大分類・総数を除外し、原子的な観測値のみを保持。
+      ディメンション情報（名称）は対応する int_mst_ec_* テーブルに分離。
+      経営組織のコード体系が2009と2014で異なるため source_survey で区別すること。
+    columns:
+      - name: survey_year
+        description: 調査年（2009 または 2014）
+        data_type: integer
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [2009, 2014]
+      - name: source_survey
+        description: 元調査（'2009' または '2014'）。org_type_code の解釈に必要
+        data_type: varchar
+        tests:
+          - not_null
+      - name: measure_code
+        description: 表章項目コード。int_mst_ec_measure で名称参照（survey_year とともに使用）
+        data_type: varchar
+        tests:
+          - not_null
+      - name: industry_code
+        description: 産業分類コード（中分類のみ。大分類・集計行は除外済み）。int_mst_ec_industry で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: org_type_code
+        description: |
+          経営組織コード（最細粒度のみ）。int_mst_ec09_org_type / int_mst_ec14_org_type で名称参照。
+          2009: 002=個人 / 004=会社 / 005=会社以外の法人
+          2014: 008=個人 / 010=会社 / 011=会社以外の法人 / 016=法人でない団体
+        data_type: varchar
+        tests:
+          - not_null
+      - name: employee_size_code
+        description: 従業者規模コード（000=総数・005=1-4人合計は除外済み）。int_mst_ec_employee_size で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: region_code
+        description: 地域コード（00000=全国は除外済み）。int_mst_ec_region で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: value
+        description: 指標値（事業所数・従業者数等）
+        data_type: number
+
+  - name: int_fct_population_census_2010
+    description: |
+      国勢調査（2010年）のファクトテーブル。15歳以上就業者数。
+      MECE観点で産業総数・大分類、従業上の地位総数、性別総数、全国・全国市郡部を除外。
+      都道府県・都道府県市部・政令市等の複数粒度が混在するため、
+      地域粒度を統一する場合は int_mst_pc_region の region_type でフィルタすること。
+    columns:
+      - name: survey_year
+        description: 調査年（2010固定）
+        data_type: integer
+        tests:
+          - not_null
+      - name: industry_code
+        description: 産業分類2010コード（中分類のみ）。int_mst_pc_industry で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: employment_status_code
+        description: 従業上の地位コード（総数除外済み）。int_mst_pc_employment_status で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: sex_code
+        description: 性別コード（総数除外済み）。int_mst_sex_census で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: region_code
+        description: 地域コード（全国・全国市郡部除外済み）。int_mst_pc_region で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: value
+        description: 15歳以上就業者数（人）。'-'は秘匿・集計不能のためnull
+        data_type: number
+
+  - name: int_fct_population_estimate
+    description: |
+      人口推計（年次）のファクトテーブル。都道府県別・年齢5歳階級別・男女別の人口（千人）。
+      MECE観点で性別総数(000)、年齢総数(01000)、全国(00000)を除外。
+      2005〜2009年の時系列を含む。
+    columns:
+      - name: survey_year
+        description: 調査年（2005〜2009）
+        data_type: integer
+        tests:
+          - not_null
+      - name: region_code
+        description: "地域コード（都道府県のみ: 全国除外済み）。int_mst_pe_region で名称参照"
+        data_type: varchar
+        tests:
+          - not_null
+      - name: age_group_code
+        description: 年齢5歳階級コード（総数除外済み）。int_mst_pe_age_group で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: sex_code
+        description: 性別コード（総数除外済み）。int_mst_sex_census で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: value
+        description: 総人口（千人）
+        data_type: number
+        tests:
+          - not_null
+
+  - name: int_fct_wage_starting_salary_2009
+    description: |
+      賃金構造基本統計調査（2009年）のファクトテーブル。新規学卒者初任給額（千円）。
+      MECE観点で産業計・全国・企業規模計・男女計・学歴計をすべて除外。
+      都道府県×産業×企業規模×性別×学歴の原子的な組み合わせのみを保持。
+    columns:
+      - name: survey_year
+        description: 調査年（2009固定）
+        data_type: integer
+        tests:
+          - not_null
+      - name: industry_code
+        description: 産業分類コード（産業計=01除外済み）。int_mst_ws_industry で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: prefecture_code
+        description: 都道府県コード2桁（全国=48除外済み）。int_mst_ws_prefecture で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: company_size_code
+        description: 企業規模コード（規模計=01除外済み）。int_mst_ws_company_size で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: sex_code
+        description: 性別コード（男女計=01除外済み）。int_mst_ws_sex で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: education_code
+        description: 学歴コード（学歴計=01除外済み）。int_mst_ws_education で名称参照
+        data_type: varchar
+        tests:
+          - not_null
+      - name: value
+        description: 初任給額（千円）。'-'は秘匿・集計不能のためnull
+        data_type: number
